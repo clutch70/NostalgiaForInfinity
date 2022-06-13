@@ -2148,7 +2148,7 @@ class NostalgiaForInfinityX(IStrategy):
             self.coin_metrics['current_whitelist'] = self.dp.current_whitelist()
 
             # Move up BTC for largest data footprint
-            self.coin_metrics['current_whitelist'].insert(0, self.coin_metrics['current_whitelist'].pop(self.coin_metrics['current_whitelist'].index(f"BTC/{self.config['stake_currency']}")))
+            self.coin_metrics['current_whitelist'].insert(0, self.coin_metrics['current_whitelist'].pop(self.coin_metrics['current_whitelist'].index(f"BTC3S/{self.config['stake_currency']}")))
 
     def top_traded_list(self):
         log.info("Updating top traded pairlist...")
@@ -9441,9 +9441,9 @@ class NostalgiaForInfinityX(IStrategy):
         informative_pairs.extend([(pair, self.info_timeframe_15m) for pair in pairs])
 
         if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP', 'TRY', 'BRL']:
-            btc_info_pair = f"BTC/{self.config['stake_currency']}"
+            btc_info_pair = f"BTC3S/{self.config['stake_currency']}"
         else:
-            btc_info_pair = "BTC/USDT"
+            btc_info_pair = "BTC3S/USDT"
 
         informative_pairs.append((btc_info_pair, self.timeframe))
         informative_pairs.append((btc_info_pair, self.info_timeframe_1d))
@@ -9880,9 +9880,9 @@ class NostalgiaForInfinityX(IStrategy):
         ___________________________________________________________________________________________
         '''
         if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP', 'TRY','BRL']:
-            btc_info_pair = f"BTC/{self.config['stake_currency']}"
+            btc_info_pair = f"BTC3S/{self.config['stake_currency']}"
         else:
-            btc_info_pair = "BTC/USDT"
+            btc_info_pair = "BTC3S/USDT"
 
         if self.has_BTC_daily_tf:
             btc_daily_tf = self.dp.get_pair_dataframe(btc_info_pair, '1d')
