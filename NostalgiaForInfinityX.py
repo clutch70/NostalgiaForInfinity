@@ -110,7 +110,7 @@ else:
 ###########################################################################################################
 
 
-class NostalgiaForInfinityX(IStrategy):
+class NostalgiaForInfinityXShort(IStrategy):
 
     INTERFACE_VERSION = 2
 
