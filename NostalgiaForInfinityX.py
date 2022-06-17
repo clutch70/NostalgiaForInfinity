@@ -115,7 +115,7 @@ class NostalgiaForInfinityXShort(IStrategy):
     INTERFACE_VERSION = 2
 
     def version(self) -> str:
-        return "v11.0.1119"
+        return "v11.0.1139"
 
     # ROI table:
     minimal_roi = {
@@ -809,7 +809,7 @@ class NostalgiaForInfinityXShort(IStrategy):
             "safe_dips_threshold_0"     : 0.026,
             "safe_dips_threshold_2"     : 0.09,
             "safe_dips_threshold_12"    : 0.26,
-            "safe_dips_threshold_144"   : 0.24,
+            "safe_dips_threshold_144"   : 0.36,
             "safe_pump_6h_threshold"    : 0.35,
             "safe_pump_12h_threshold"   : 0.45,
             "safe_pump_24h_threshold"   : None,
@@ -10448,6 +10448,18 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
                         | (dataframe['closedelta'].gt(dataframe['close'] * 0.04))
                     )
+                    item_buy_logic.append(
+                        (dataframe['btc_not_downtrend_1h'] == True)
+                        | (dataframe['cmf'] > -0.3)
+                        | (dataframe['rsi_14'] < 30.0)
+                        | (dataframe['cti'] < -0.5)
+                        | (dataframe['cti_1h'] < 0.5)
+                        | (dataframe['tpct_change_12'] < 0.1)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.93)
+                        | (dataframe['close'] < dataframe['sma_30'] * 0.93)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.98)
+                        | (dataframe['closedelta'].gt(dataframe['close'] * 0.04))
+                    )
 
                 # Condition #4 - Semi swing. Local dip.
                 elif index == 4:
@@ -10893,6 +10905,7 @@ class NostalgiaForInfinityXShort(IStrategy):
                 # Condition #8 - Semi swing. Local deeper dip. Uptrend.
                 elif index == 8:
                     # Non-Standard protections
+                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * 0.938)
@@ -10971,6 +10984,20 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['close'] < dataframe['ema_20'] * 0.91)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.975)
                     )
+                    item_buy_logic.append(
+                        (dataframe['btc_not_downtrend_1h'] == True)
+                        | (dataframe['ewo'] > 7.0)
+                        | (dataframe['cmf'] > -0.1)
+                        | (dataframe['mfi'] > 30.0)
+                        | (dataframe['rsi_14'] < 30.0)
+                        | (dataframe['cti_1h'] < 0.0)
+                        | (dataframe['rsi_14_1h'] < 50.0)
+                        | (dataframe['crsi_1h'] > 20.0)
+                        | (dataframe['tpct_change_144'] < 0.12)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.3)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.94)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
+                    )
 
                 # Condition #9 - Semi swing. Local dip. Downtrend.
                 elif index == 9:
@@ -11035,6 +11062,17 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['tpct_change_144'] < 0.16)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.95)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.98)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > -0.2)
+                        | (dataframe['mfi'] > 10.0)
+                        | (dataframe['ewo'] < -6.0)
+                        | ((dataframe['cti_1h'] < -0.0) & (dataframe['cti_1h'] > -0.9))
+                        | (dataframe['crsi_1h'] > 30.0)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.3)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.96)
+                        | (dataframe['close'] < dataframe['sma_30'] * 0.95)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.99)
                     )
 
                 # Condition #10 - Semi swing. Local dip.
@@ -11603,6 +11641,7 @@ class NostalgiaForInfinityXShort(IStrategy):
                 # Condition #15 - Semi swing. Uptrend. Local dip.
                 elif index == 15:
                     # Non-Standard protections
+                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.992))
@@ -11645,6 +11684,15 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['cti_1h'] < -0.5)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.91)
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.97))
+                    )
+                    item_buy_logic.append(
+                        (dataframe['ewo'] > 8.0)
+                        | (dataframe['rsi_14'] < 30.0)
+                        | (dataframe['cti_1h'] < 0.8)
+                        | (dataframe['r_480_1h'] < -18.0)
+                        | (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.97)
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
                     )
 
                 # Condition #16 - Semi swing. Cross above.
@@ -11737,7 +11785,8 @@ class NostalgiaForInfinityXShort(IStrategy):
                 # Condition #19 - Semi swing. Uptrend. Local dip.  BTC not downtrend.
                 elif index == 19:
                     # Non-Standard protections
-                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.964))
+                    item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.9))
+                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
@@ -11750,7 +11799,26 @@ class NostalgiaForInfinityXShort(IStrategy):
                     item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
                     item_buy_logic.append(dataframe['cti'] < -0.9)
                     item_buy_logic.append(dataframe['cti_1h'] < 0.86)
-                    item_buy_logic.append(dataframe['r_480_1h'] < -18.0)
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > -0.3)
+                        | (dataframe['mfi'] > 30.0)
+                        | (dataframe['rsi_14'] < 20.0)
+                        | (dataframe['cti_1h'] < 0.5)
+                        | (dataframe['crsi_1h'] > 20.0)
+                        | (dataframe['close'] > (dataframe['sup_level_1h'] * 0.964))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.94)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.99)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > -0.1)
+                        | (dataframe['mfi'] > 30.0)
+                        | (dataframe['rsi_14'] < 30.0)
+                        | (dataframe['cti_1h'] < 0.5)
+                        | (dataframe['r_480_1h'] < -18.0)
+                        | (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.94)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
+                    )
 
                 # Condition #20 - Semi swing. Uptrend. Local dip.
                 elif index == 20:
@@ -11916,6 +11984,17 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['close'] < dataframe['sma_30'] * 0.96)
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
                     )
+                    item_buy_logic.append(
+                        (dataframe['btc_not_downtrend_1h'] == True)
+                        | (dataframe['cmf'] > -0.2)
+                        | (dataframe['rsi_14'] < 30.0)
+                        | (dataframe['tpct_change_144'] < 0.2)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.3)
+                        | (dataframe['close'] > (dataframe['sma_200_1h'] * 0.8))
+                        | (dataframe['close'] > (dataframe['sup3_1d'] * 1.0))
+                        | (dataframe['close'] < dataframe['sma_30'] * 0.95)
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
+                    )
 
                 # Condition #24 - Semi swing. Uptrend. 1h uptrend. Local dip.
                 elif index == 24:
@@ -12019,6 +12098,13 @@ class NostalgiaForInfinityXShort(IStrategy):
                     item_buy_logic.append(
                         (dataframe['cmf'] > -0.3)
                         | (dataframe['rsi_14'] < 26.0)
+                        | (dataframe['cmf_1h'] > 0.3)
+                        | (dataframe['cti_1h'] < 0.5)
+                        | (dataframe['rsi_14_1h'] < 50.0)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['mfi'] > 20.0)
+                        | (dataframe['rsi_14'] < 32.0)
                         | (dataframe['cmf_1h'] > 0.3)
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['rsi_14_1h'] < 50.0)
@@ -12177,6 +12263,7 @@ class NostalgiaForInfinityXShort(IStrategy):
                 elif index == 29:
                     # Non-Standard protections
                     item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.8))
+                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * 0.982))
@@ -12200,6 +12287,19 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['close'] > (dataframe['sma_200_1h'] * 0.8))
                         | (dataframe['close'] > (dataframe['sup3_1d'] * 1.0))
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
+                    )
+                    item_buy_logic.append(
+                        (dataframe['ewo'] < -12.0)
+                        | (dataframe['cmf'] > -0.2)
+                        | ((dataframe['mfi'] > 30.0) & (dataframe['btc_not_downtrend_1h'] == True))
+                        | (dataframe['rsi_14'] < 20.0)
+                        | (dataframe['crsi_1h'] > 12.0)
+                        | (dataframe['tpct_change_144'] < 0.2)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.5)
+                        | (dataframe['close'] > (dataframe['sma_200_1h'] * 0.7))
+                        | (dataframe['close'] > (dataframe['sup2_1d'] * 1.0))
+                        | (dataframe['close'] < dataframe['sma_30'] * 0.93)
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
                     )
 
                 # Condition #30 - Semi swing. Local dip. BTC not downtrend.
@@ -12236,6 +12336,7 @@ class NostalgiaForInfinityXShort(IStrategy):
                 elif index == 31:
                     # Non-Standard protections
                     item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.95))
+                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
 
                     # Logic
                     item_buy_logic.append(dataframe['bb40_2_low'].shift().gt(0))
@@ -12251,6 +12352,14 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['tpct_change_144'] < 0.2)
                         | (dataframe['hl_pct_change_48_1h'] < 0.5)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['rsi_14'] < 30.0)
+                        | (dataframe['cti_1h'] < 0.0)
+                        | (dataframe['tpct_change_144'] < 0.12)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.3)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.94)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
                     )
 
                 # Condition #32 - Long mode. Local dip.
@@ -12342,6 +12451,7 @@ class NostalgiaForInfinityXShort(IStrategy):
                     # Non-Standard protections
                     item_buy_logic.append(dataframe['ema_200'] > (dataframe['ema_200'].shift(36) * 1.035))
                     item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.9))
+                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * 0.97)
@@ -12358,6 +12468,16 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['tpct_change_144'] < 0.16)
                         | (dataframe['hl_pct_change_48_1h'] < 0.5)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.946)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > 0.0)
+                        | (dataframe['rsi_14'] < 20.0)
+                        | (dataframe['cti_1h'] < 0.5)
+                        | (dataframe['tpct_change_144'] < 0.2)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.5)
+                        | (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
+                        | (dataframe['close'] < dataframe['sma_30'] * 0.95)
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
                     )
 
                 # Condition #37 - Semi swing. Uptrend. Local dip.
@@ -12582,6 +12702,7 @@ class NostalgiaForInfinityXShort(IStrategy):
                 elif index == 42:
                     # Non-Standard protections
                     item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.92))
+                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
 
                     # Logic
                     item_buy_logic.append(dataframe['ewo_15m'] > 5.4)
@@ -12619,6 +12740,17 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['close'] < dataframe['ema_20'] * 0.97)
                         | (dataframe['close'] < dataframe['sma_30'] * 0.96)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > 0.0)
+                        | (dataframe['rsi_14'] < 20.0)
+                        | (dataframe['cti'] < -0.9)
+                        | (dataframe['cti_1h'] < 0.5)
+                        | (dataframe['tpct_change_144'] < 0.1)
+                        | (dataframe['close'] < (dataframe['res2_1d'] * 1.0))
+                        | (dataframe['close'] < dataframe['sma_30'] * 0.96)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.99)
+                        | (dataframe['rsi_14_15m'] < 30.0)
                     )
 
                 # Condition #43 - 15m. Semi swing. Local dip. 1h uptrend.
@@ -12718,6 +12850,18 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['hl_pct_change_48_1h'] < 0.3)
                         | (dataframe['close'] < dataframe['sma_30'] * 0.92)
                         | (dataframe['rsi_14_15m'] < 25.0)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['btc_not_downtrend_1h'] == True)
+                        | (dataframe['cmf'] > -0.2)
+                        | (dataframe['mfi'] > 20.0)
+                        | (dataframe['rsi_14'] < 30.0)
+                        | (dataframe['cti_1h'] < 0.5)
+                        | (dataframe['rsi_14_1h'] < 50.0)
+                        | (dataframe['tpct_change_144'] < 0.08)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.3)
+                        | (dataframe['close'] < dataframe['sma_30'] * 0.95)
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
                     )
                     item_buy_logic.append(dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 0.95))
 
@@ -13400,6 +13544,7 @@ class NostalgiaForInfinityXShort(IStrategy):
                 elif index == 57:
                     # Non-Standard protections
                     item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.92))
+                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
 
                     # Logic
                     item_buy_logic.append(dataframe['ewo_15m'].shift(3) > 5.0)
@@ -13435,6 +13580,17 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['close'] < dataframe['ema_20'] * 0.948)
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         | (dataframe['ewo_15m'].shift(3) > 8.0)
+                    )
+                    item_buy_logic.append(
+                       (dataframe['cmf'] > -0.1)
+                        | (dataframe['mfi'] > 30.0)
+                        | (dataframe['cti_1h'] < 0.0)
+                        | (dataframe['crsi_1h'] > 25.0)
+                        | (dataframe['tpct_change_144'] < 0.12)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.5)
+                        | (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.96)
+                        | (dataframe['close_15m'].shift(3) < (dataframe['bb20_2_low_15m'].shift(3) * 0.98))
                     )
 
                 # Condition #58 - Semi swing. Local dip.
@@ -13506,6 +13662,7 @@ class NostalgiaForInfinityXShort(IStrategy):
                     item_buy_logic.append(dataframe['roc_9_1h'] < 86.0)
                     item_buy_logic.append(dataframe['bb20_width_1h'] < 0.954)
                     item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.85))
+                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
 
                     # Logic
                     item_buy_logic.append(dataframe['rsi_4'] < 44.0)
@@ -13516,6 +13673,16 @@ class NostalgiaForInfinityXShort(IStrategy):
                     item_buy_logic.append(
                         (dataframe['sma_200'] > dataframe['sma_200'].shift(48))
                         | (dataframe['close'] > (dataframe['ema_200_1h'] * 0.82))
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > -0.3)
+                        | (dataframe['mfi'] > 20.0)
+                        | (dataframe['cti_1h'] < 0.0)
+                        | (dataframe['crsi_1h'] > 12.0)
+                        | (dataframe['tpct_change_144'] < 0.12)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.3)
+                        | (dataframe['close'] > (dataframe['sup2_1d'] * 1.0))
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.96))
                     )
 
                 # Condition #61 - Semi swing. Local dip. Stochastic fast cross.
@@ -13669,9 +13836,8 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['cmf'] > -0.1)
                         | (dataframe['rsi_14'] < 20.0)
                         | (dataframe['crsi_1h'] > 12.0)
-                        | (dataframe['tpct_change_144'] < 0.18)
-                        | (dataframe['hl_pct_change_48_1h'] < 0.5)
-                        | (dataframe['close'] > (dataframe['sup_level_1h'] * 0.9))
+                        | (dataframe['tpct_change_144'] < 0.16)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.4)
                         | (dataframe['close'] > (dataframe['sup2_1d'] * 1.0))
                         | (dataframe['close'] < dataframe['ema_20'] * 0.95)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
@@ -13764,6 +13930,19 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['close'] < dataframe['ema_20'] * 0.93)
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.97))
                     )
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > -0.2)
+                        | (dataframe['rsi_14'] < 30.0)
+                        | (dataframe['cti'] < -0.9)
+                        | (dataframe['ewo'] > 4.0)
+                        | (dataframe['cti_1h'] < -0.5)
+                        | (dataframe['crsi_1h'] > 20.0)
+                        | (dataframe['tpct_change_144'] < 0.12)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.3)
+                        | (dataframe['close'] > (dataframe['sma_200_1h'] * 0.9))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.92)
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.97))
+                    )
                     item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_12'] * 1.4))
                     item_buy_logic.append(dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 0.8))
 
@@ -13816,6 +13995,18 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['close'] > (dataframe['sup3_1d'] * 1.0))
                         | (dataframe['close'] < dataframe['ema_13'] * 0.96)
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.99))
+                    )
+                    item_buy_logic.append(
+                        ((dataframe['cmf'] > -0.2) & (dataframe['ewo'] < -6.0))
+                        | (dataframe['rsi_14'] < 25.0)
+                        | (dataframe['cti_1h'] < -0.9)
+                        | (dataframe['crsi_1h'] > 6.0)
+                        | (dataframe['tpct_change_144'] < 0.16)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.3)
+                        | (dataframe['close'] > (dataframe['sma_200_1h'] * 0.7))
+                        | (dataframe['close'] > (dataframe['sup2_1d'] * 1.0))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.96)
+                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
                     )
 
                 # Condition #65 - Semi swing. Local deep.
