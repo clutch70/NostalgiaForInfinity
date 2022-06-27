@@ -5,7 +5,6 @@ on:
     # scheduled for 00:00 every Monday
   workflow_dispatch:
 
-
 jobs:
   merge-upstream:
     runs-on: ubuntu-latest
