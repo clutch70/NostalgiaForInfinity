@@ -17,7 +17,7 @@ jobs:
 
       - name: Merge Upstream
         id: sync
-        uses: bdougie/Fork-Sync-With-Upstream-action@fork
+        uses: clutch70/Fork-Sync-With-Upstream-action@fork
         with:
           upstream_repository: iterativv/NostalgiaForInfinity      # set the upstream repo
           upstream_branch: main   # set the upstream branch to merge from
