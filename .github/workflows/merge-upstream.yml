@@ -3,19 +3,25 @@ on:
   schedule:
     - cron: '0 0 * * 1'
     # scheduled for 00:00 every Monday
+  workflow_dispatch:
+
 
 jobs:
   merge-upstream:
     runs-on: ubuntu-latest
+    name: Sync NFI With Upstream
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           ref: main             # set the branch to merge to
-          fetch-depth: 0
+
       - name: Merge Upstream
-        uses: exions/merge-upstream@v1
+        id: sync
+        uses: bdougie/Fork-Sync-With-Upstream-action@fork
         with:
-          upstream: iterativv/NostalgiaForInfinity      # set the upstream repo
-          upstream-branch: main   # set the upstream branch to merge from
-          branch: main          # set the branch to merge to
+          upstream_repository: iterativv/NostalgiaForInfinity      # set the upstream repo
+          upstream_branch: main   # set the upstream branch to merge from
+          target_branch: main          # set the branch to merge to
+      - name: Timestamp
+        run: date
