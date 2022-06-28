@@ -17,11 +17,11 @@ jobs:
           ref: main             # set the branch to merge to
 
       - name: Merge Upstream
-        id: sync
-        uses: clutch70/Fork-Sync-With-Upstream-action@fork
-        with:
-          upstream_repository: iterativv/NostalgiaForInfinity      # set the upstream repo
-          upstream_branch: main   # set the upstream branch to merge from
-          target_branch: main          # set the branch to merge to
+        run: |
+          git remote add upstream "https://github.com/iterativv/NostalgiaForInfinity"
+          git fetch upstream main
+          git pull upstream "main" --no-rebase
+          git push origin "main"
+          echo Merge completed!!!
       - name: Timestamp
         run: date
