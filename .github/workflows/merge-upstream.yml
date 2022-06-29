@@ -23,7 +23,7 @@ jobs:
           echo Fetching upstream...
           git fetch upstream main
           echo Pulling main branch --no-rebase
-          git pull upstream "main" --no-rebase
+          git pull upstream "main" --no-rebase --allow-unrelated-histories
           echo Pushing merge...
           git push origin "main"
           echo Merge completed!!!
