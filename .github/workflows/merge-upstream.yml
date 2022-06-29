@@ -5,7 +5,7 @@ on:
   schedule:
      # actually, ~5 minutes is the highest
      # effective frequency you will get
-    - cron:  '0 6 * * *'
+    - cron:  '0 0,4,8,12,16,20 * * *'
   workflow_dispatch:
 jobs:
   Merge-NFI:
