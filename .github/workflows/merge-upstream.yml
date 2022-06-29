@@ -1,9 +1,4 @@
-
-
-iterativv/NostalgiaForInfinity
-
-
-# .github/workflows/example.yml
+# .github/workflows/merge-upstream.yml
 
 name: Merge upstream branches
 on:
