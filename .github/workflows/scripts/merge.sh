@@ -15,7 +15,6 @@ git fetch upstream
 git merge upstream/main
 git push origin main
 echo Displaying new commit hash
-echo
 git log --pretty=format:'%h' -n 1
 newCommit=$(git log --pretty=format:'%h' -n 1)
 echo
