@@ -12,3 +12,13 @@ git merge upstream/main
 git push origin main
 newCommit=$(git log --pretty=format:'%h' -n 1)
 echo Collected hash is $newCommit
+if [[ "$oldCommit" == "$newCommit" ]]
+then
+  echo Commit is unchanged!!!
+  exit
+fi
+
+if [[ "$oldCommit" != "$newCommit" ]]
+then
+  echo Commit is updated!!! New commit hash is $newCommit
+fi
