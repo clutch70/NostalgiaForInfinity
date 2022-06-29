@@ -18,6 +18,8 @@ jobs:
 
       - name: Merge Upstream
         run: |
+          git config --global user.email "b.custard@outlook.com"
+          git config --global user.name "clutch70"
           echo Add Remote Upstream
           git remote add upstream "https://github.com/iterativv/NostalgiaForInfinity"
           echo Fetching upstream...
