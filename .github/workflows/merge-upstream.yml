@@ -13,4 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Merge Upstream NFI
+        env:
+          GHUSER: ${{ secrets.GHUSER }}
+          GHEMAIL: ${{ secrets.GHEMAIL }}
         run: ./.github/workflows/scripts/merge.sh
