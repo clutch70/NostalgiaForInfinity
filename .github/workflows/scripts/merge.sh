@@ -1,6 +1,3 @@
-echo Displaying current commit hash
-echo
-git log --pretty=format:'%h' -n 1
 oldCommit=$(git log --pretty=format:'%h' -n 1)
 echo
 echo Collected hash is $oldCommit
@@ -14,8 +11,6 @@ git remote add upstream https://github.com/iterativv/NostalgiaForInfinity
 git fetch upstream
 git merge upstream/main
 git push origin main
-echo Displaying new commit hash
-git log --pretty=format:'%h' -n 1
 newCommit=$(git log --pretty=format:'%h' -n 1)
 echo
 echo Collected hash is $newCommit
