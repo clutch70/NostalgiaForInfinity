@@ -1,6 +1,6 @@
 # .github/workflows/merge-upstream.yml
 
-name: Merge upstream branches
+name: Merge Upstream Repository
 on:
   schedule:
      # actually, ~5 minutes is the highest
