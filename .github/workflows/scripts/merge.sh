@@ -1,5 +1,4 @@
 oldCommit=$(git log --pretty=format:'%h' -n 1)
-echo
 echo Collected hash is $oldCommit
 git config --global user.name 'clutch70'
 git config --global user.email 'b.custard@outlook.com'
@@ -12,5 +11,4 @@ git fetch upstream
 git merge upstream/main
 git push origin main
 newCommit=$(git log --pretty=format:'%h' -n 1)
-echo
 echo Collected hash is $newCommit
