@@ -2,6 +2,7 @@ echo Displaying current commit hash
 echo
 git log --pretty=format:'%h' -n 1
 oldCommit=$(git log --pretty=format:'%h' -n 1)
+echo
 echo Collected hash is $oldCommit
 git config --global user.name 'clutch70'
 git config --global user.email 'b.custard@outlook.com'
@@ -17,4 +18,5 @@ echo Displaying new commit hash
 echo
 git log --pretty=format:'%h' -n 1
 newCommit=$(git log --pretty=format:'%h' -n 1)
+echo
 echo Collected hash is $newCommit
