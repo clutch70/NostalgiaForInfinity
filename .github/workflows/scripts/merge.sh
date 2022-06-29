@@ -1,6 +1,7 @@
 echo Displaying current commit hash
 git log --pretty=format:'%h' -n 1
-let oldCommit=git log --pretty=format:'%h' -n 1
+oldCommit=git log --pretty=format:'%h' -n 1
+echo Collected hash is $oldCommit
 git config --global user.name 'clutch70'
 git config --global user.email 'b.custard@outlook.com'
 git pull --unshallow  # this option is very important, you would get
@@ -13,4 +14,5 @@ git merge upstream/main
 git push origin main
 echo Displaying new commit hash
 git log --pretty=format:'%h' -n 1
-let newCommit=git log --pretty=format:'%h' -n 1
+newCommit=git log --pretty=format:'%h' -n 1
+echo Collected hash is $newCommit
