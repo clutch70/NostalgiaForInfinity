@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Merge upstream
+      - name: Merge Upstream NFI
         run: |
           git config --global user.name 'clutch70'
           git config --global user.email 'b.custard@outlook.com'
