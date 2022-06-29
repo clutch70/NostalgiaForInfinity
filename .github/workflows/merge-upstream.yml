@@ -1,6 +1,6 @@
 # .github/workflows/merge-upstream.yml
 
-name: Merge Upstream Repository
+name: Merge Upstream NFI Repository
 on:
   schedule:
      # actually, ~5 minutes is the highest
