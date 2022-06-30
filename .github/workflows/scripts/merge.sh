@@ -12,6 +12,12 @@ git remote add upstream https://github.com/iterativv/NostalgiaForInfinity
 git fetch upstream
 git merge upstream/main
 git push origin main
+
+# Delete the next 3 lines if you don't have any other forks.
+# Rename "short" if you do
+git checkout short
+git merge upstream/main
+git push origin short
 newCommit=$(git log --pretty=format:'%h' -n 1)
 #echo Collected hash is $newCommit
 if [[ "$oldCommit" == "$newCommit" ]]
