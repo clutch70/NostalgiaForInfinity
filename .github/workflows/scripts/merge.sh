@@ -1,5 +1,5 @@
 oldCommit=$(git log --pretty=format:'%h' -n 1)
-echo Collected hash is $oldCommit
+#echo Collected hash is $oldCommit
 echo GHUSER is $GHUSER
 echo GHEMAIL is $GHEMAIL
 git config --global user.name $GHUSER
@@ -13,10 +13,10 @@ git fetch upstream
 git merge upstream/main
 git push origin main
 newCommit=$(git log --pretty=format:'%h' -n 1)
-echo Collected hash is $newCommit
+#echo Collected hash is $newCommit
 if [[ "$oldCommit" == "$newCommit" ]]
 then
-  echo Commit is unchanged!!!
+  echo Commit $newCommit is unchanged!!!
   exit
 fi
 
