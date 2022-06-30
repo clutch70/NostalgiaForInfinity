@@ -23,4 +23,8 @@ fi
 if [[ "$oldCommit" != "$newCommit" ]]
 then
   echo Commit is updated!!! New commit hash is $newCommit
+  git clone https://github.com/clutch70/pushover
+  cd pushover
+  echo $POTOKEN > pushover_api
+  python3 pushover.py "NFI Fork Updated" "GH workflows have automatically merged upstream NFI changes to the CN fork." "0"
 fi

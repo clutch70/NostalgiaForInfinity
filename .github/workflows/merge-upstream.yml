@@ -17,4 +17,5 @@ jobs:
         env:
           GHUSER: ${{ secrets.GHUSER }}
           GHEMAIL: ${{ secrets.GHEMAIL }}
+          POTOKEN: ${{ secrets.POTOKEN }}
         run: ./.github/workflows/scripts/merge.sh
