@@ -1,7 +1,7 @@
 oldCommit=$(git log --pretty=format:'%h' -n 1)
 #echo Collected hash is $oldCommit
-echo GHUSER is $GHUSER
-echo GHEMAIL is $GHEMAIL
+#echo GHUSER is $GHUSER
+#echo GHEMAIL is $GHEMAIL
 git config --global user.name $GHUSER
 git config --global user.email $GHEMAIL
 git pull --unshallow  # this option is very important, you would get
