@@ -33,6 +33,6 @@ then
   git clone https://github.com/clutch70/pushover
   cd pushover
   echo $POTOKEN > pushover_api
-  python3 pushover.py "NFI Fork Updated" "GH workflows have automatically merged upstream NFI changes to the CN fork." "-1" $POUSER
+  python3 pushover.py --title "NFI Fork Updated" --message "GH workflows have automatically merged upstream NFI changes to the CN fork." --priority -1 --userAddress $POUSER
   exit
 fi
