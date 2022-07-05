@@ -1,51 +1,15 @@
 # NostalgiaForInfinity
 Trading strategy for the [Freqtrade](https://www.freqtrade.io) crypto bot. For backtesting results, check out the comments in the individual [commit](https://github.com/iterativv/NostalgiaForInfinity/commits/main) page.
 
-## Clone The Repository
-If you plan to only clone the repository to use the strategy, a regular ``git clone`` will do.
+## Updated ReadMe
+Please see iterativ's [original](https://github.com/iterativv/NostalgiaForInfinity) page for intended ReadMe contents. Only custom changes are documented here.
 
-However, if you plan on running additional strategies or run the test suite, you need to clone
-the repository and it's submodules.
+## Short Branch
+For use with *3S or *5S tokens. Essentially, replaces the BTC informative pair with BTC3S/USDT.
 
-### Newer versions of Git
-
-```bash
-git clone --recurse-submodules https://github.com/iterativv/NostalgiaForInfinity.git checkout-path
-```
-
-### Older versions of Git
-
-```bash
-git clone --recursive https://github.com/iterativv/NostalgiaForInfinity.git checkout-path
-```
-
-### Existing Checkouts
-```
-git submodule update --remote --checkout
-```
-
-
-## Change strategy
-
-Add strategies to the [user_data/strategies](user_data/strategies) folder and also in the [docker-compose.yml](docker-compose.yml) file at `strategy-list` add your strategy in the list.
-
-[Additional Information : NFINext is a older strategy on 5m tf , NFI-NG is a 15m tf stategy abandoned mid development , NFIX is the currently developed strategy (a rework of NG on 5m tf)]
-
-## General Recommendations
-
-For optimal performance, suggested to use between 4 and 6 open trades, with unlimited stake.
-
-A pairlist with 40 to 80 pairs. Volume pairlist works well.
-
-Prefer stable coin (USDT, BUSD etc) pairs, instead of BTC or ETH pairs.
-
-Highly recommended to blacklist leveraged tokens (*BULL, *BEAR, *UP, *DOWN etc).
-
-Ensure that you don't override any variables in you config.json. Especially the timeframe (must be 5m).
-
-* `use_sell_signal` must set to true (or not set at all).
-* `sell_profit_only` must set to false (or not set at all).
-* `ignore_roi_if_buy_signal` must set to true (or not set at all).
+## Auto Fork Sync Workflow
+Implement the merge-upstream.yml workflow and its required scripts/merge.sh bash script to enable automatic updates  
+of the upstream NFI repo. Setup a secrets environment "default" and set the GHUSER and GHEMAIL env vars.
 
 ## Donations
 
