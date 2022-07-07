@@ -5,7 +5,7 @@ Trading strategy for the [Freqtrade](https://www.freqtrade.io) crypto bot. For b
 Please see iterativ's [original](https://github.com/iterativv/NostalgiaForInfinity) page for intended ReadMe contents. Only custom changes are documented here.
 
 ## Short Branch
-For use with *3S or *5S tokens. Essentially, replaces the BTC informative pair with BTC3S/USDT.
+For use with *3S or *5S tokens. Essentially, replaces the BTC informative pair with BTC3S/USDT. Wildly untested.
 
 ## Auto Fork Sync Workflow
 Implement the merge-upstream.yml workflow and its required scripts/merge.sh bash script to enable automatic updates  

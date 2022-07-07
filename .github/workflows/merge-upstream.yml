@@ -18,4 +18,5 @@ jobs:
           GHUSER: ${{ secrets.GHUSER }}
           GHEMAIL: ${{ secrets.GHEMAIL }}
           POTOKEN: ${{ secrets.POTOKEN }}
+          POUSER: ${{ secrets.POUSER }}
         run: ./.github/workflows/scripts/merge.sh
