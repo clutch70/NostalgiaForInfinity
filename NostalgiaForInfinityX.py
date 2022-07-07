@@ -133,7 +133,7 @@ class NostalgiaForInfinityX(IStrategy):
     use_custom_stoploss = False
 
     # Optimal timeframe for the strategy.
-    timeframe = '5m'
+    timeframe = '4h'
     res_timeframe = 'none'
     info_timeframe_1d = '1d'
     info_timeframe_1h = '1h'
