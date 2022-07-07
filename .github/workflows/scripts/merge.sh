@@ -21,6 +21,10 @@ git checkout short
 git merge upstream/main
 git push origin short
 
+git checkout swing
+git merge upstream/main
+git push origin swing
+
 if [[ "$oldCommit" == "$newCommit" ]]
 then
   echo Commit $newCommit is unchanged!!!
