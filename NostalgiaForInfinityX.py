@@ -110,7 +110,7 @@ else:
 ###########################################################################################################
 
 
-class NostalgiaForInfinityX(IStrategy):
+class NostalgiaForInfinityXSwing(IStrategy):
 
     INTERFACE_VERSION = 3
 
@@ -133,11 +133,11 @@ class NostalgiaForInfinityX(IStrategy):
     use_custom_stoploss = False
 
     # Optimal timeframe for the strategy.
-    timeframe = '4h'
+    timeframe = '1h'
     res_timeframe = 'none'
     info_timeframe_1d = '1d'
-    info_timeframe_1h = '1h'
-    info_timeframe_15m = '15m'
+    info_timeframe_1h = '6h'
+    info_timeframe_15m = '4h'
 
     # BTC informative
     has_BTC_base_tf = True
