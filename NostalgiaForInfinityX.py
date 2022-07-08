@@ -115,7 +115,7 @@ class NostalgiaForInfinityXShort(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.0.1255"
+        return "v11.0.1259"
 
     # ROI table:
     minimal_roi = {
@@ -169,7 +169,7 @@ class NostalgiaForInfinityXShort(IStrategy):
     # Rebuy feature
     position_adjustment_enable = True
     rebuy_mode = 0
-    max_rebuy_orders_0 = 4
+    max_rebuy_orders_0 = 2
     max_rebuy_orders_1 = 1
     max_rebuy_orders_2 = 10
     max_rebuy_orders_3 = 8
@@ -183,7 +183,7 @@ class NostalgiaForInfinityXShort(IStrategy):
     max_rebuy_multiplier_4 = 0.1
     max_rebuy_multiplier_5 = 0.35
     rebuy_pcts_n_0 = (-0.04, -0.06, -0.09, -0.12)
-    rebuy_pcts_n_1 = (-0.07, -0.09)
+    rebuy_pcts_n_1 = (-0.06, -0.09)
     rebuy_pcts_n_2 = (-0.02, -0.025, -0.025, -0.03, -0.04, -0.045, -0.05, -0.055, -0.06, -0.08)
     rebuy_pcts_p_2 = (0.02, 0.025, 0.025, 0.03, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095)
     rebuy_pcts_n_3 = (-0.02, -0.04, -0.06, -0.08, -0.1, -0.12, -0.14, -0.16)
@@ -2632,47 +2632,36 @@ class NostalgiaForInfinityXShort(IStrategy):
         if all(c in self.half_mode_tags for c in enter_tags):
             use_mode = 5
 
-        if (use_mode in [0, 1, 2, 3, 4]):
-            return None
-
         is_rebuy = False
 
         if (use_mode == 0):
-            if (1 <= count_of_entries <= 2):
+            if (1 <= count_of_entries <= 1):
                 if (
                         (current_profit < self.rebuy_pcts_n_0[count_of_entries - 1])
-                        and (
-                            (last_candle['crsi'] > 12.0)
-                            and (last_candle['crsi_1h'] > 10.0)
-                        )
+                        and (last_candle['close_max_48'] < (last_candle['close'] * 1.04))
+                        and (last_candle['btc_pct_close_max_72_5m'] < 1.02)
                 ):
                     is_rebuy = True
-            elif (3 <= count_of_entries <= self.max_rebuy_orders_0):
+            elif (2 <= count_of_entries <= self.max_rebuy_orders_0):
                 if (
                         (current_profit < self.rebuy_pcts_n_0[count_of_entries - 1])
-                        and (
-                            (last_candle['crsi'] > 12.0)
-                            and (last_candle['crsi_1h'] > 10.0)
-                            and (last_candle['btc_not_downtrend_1h'] == True)
-                        )
+                        and (last_candle['close_max_48'] < (last_candle['close'] * 1.04))
+                        and (last_candle['btc_pct_close_max_72_5m'] < 1.02)
                 ):
                     is_rebuy = True
         elif (use_mode == 1):
             if (count_of_entries == 1):
                 if (
                         (current_profit < self.rebuy_pcts_n_1[0])
-                        and (
-                            (last_candle['crsi'] > 12.0)
-                        )
+                        and (last_candle['close_max_48'] < (last_candle['close'] * 1.05))
+                        and (last_candle['btc_pct_close_max_72_5m'] < 1.02)
                 ):
                     is_rebuy = True
             elif (count_of_entries == 2):
                 if (
                         (current_profit < self.rebuy_pcts_n_1[1])
-                        and (
-                            (last_candle['crsi'] > 20.0)
-                            and (last_candle['crsi_1h'] > 11.0)
-                        )
+                        and (last_candle['close_max_48'] < (last_candle['close'] * 1.05))
+                        and (last_candle['btc_pct_close_max_72_5m'] < 1.02)
                 ):
                     is_rebuy = True
         elif (use_mode == 2):
@@ -9518,7 +9507,7 @@ class NostalgiaForInfinityXShort(IStrategy):
         is_leverage = bool(re.match(leverage_pattern, trade.pair))
         stop_index = 0 if  not is_leverage else 1
         if (
-                (current_profit < [-0.25, -0.30][stop_index])
+                (current_profit < [-0.35, -0.35][stop_index])
         ):
             return True, 'sell_stoploss_hlf_stop_1'
 
@@ -9756,7 +9745,11 @@ class NostalgiaForInfinityXShort(IStrategy):
             previous_profit = None
             if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
                 previous_profit = self.target_profit_cache.data[pair]['profit']
-            if (previous_profit is None) or (previous_profit < current_profit):
+            if (
+                    (previous_profit is None)
+                    or (previous_profit < current_profit)
+                    or (signal_name in ["sell_profit_maximizer_01", "sell_stoploss_u_e_1", "sell_stoploss_doom_1", "sell_stoploss_stop_1", "sell_stoploss_rpd_stop_1", "sell_stoploss_hlf_stop_1"])
+            ):
                 mark_pair, mark_signal = self.mark_profit_target(pair, sell, signal_name, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
                 if mark_pair:
                     self._set_profit_target(pair, mark_signal, current_rate, current_profit, current_time)
