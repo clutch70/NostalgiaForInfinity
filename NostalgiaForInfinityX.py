@@ -115,7 +115,7 @@ class NostalgiaForInfinityXSwing(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.0.1289"
+        return "v11.0.1291"
 
 
     # ROI table:
@@ -12442,12 +12442,11 @@ class NostalgiaForInfinityXSwing(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.97)
                     )
                     item_buy_logic.append(
-                        (dataframe['cmf'] > -0.1)
-                        | (dataframe['mfi'] > 10.0)
+                        (dataframe['cmf'] > 0.3)
                         | (dataframe['cti'] < -0.9)
-                        | (dataframe['crsi'] > 10.0)
-                        | (dataframe['cti_1h'] < -0.95)
-                        | (dataframe['close'] > (dataframe['sma_200_1h'] * 0.8))
+                        | (dataframe['crsi'] > 20.0)
+                        | (dataframe['cti_1h'] < -0.99)
+                        | (dataframe['close'] > (dataframe['sma_200_1h'] * 0.9))
                         | (dataframe['close'] > (dataframe['sup1_1d'] * 1.0))
                         | (dataframe['close'] < dataframe['sma_30'] * 0.95)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.95)
@@ -13542,16 +13541,14 @@ class NostalgiaForInfinityXSwing(IStrategy):
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
                     )
                     item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
-                        | (dataframe['cmf'] > -0.2)
-                        | (dataframe['mfi'] > 10.0)
+                        (dataframe['cmf'] > -0.2)
+                        | (dataframe['mfi'] > 30.0)
                         | (dataframe['rsi_14'] < 20.0)
                         | (dataframe['cti'] < -0.9)
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['rsi_14_1h'] < 50.0)
-                        | (dataframe['crsi_1h'] > 30.0)
-                        | (dataframe['tpct_change_144'] < 0.12)
-                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.12))
+                        | (dataframe['tpct_change_144'] < 0.08)
+                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.08))
                         | (dataframe['hl_pct_change_48_1h'] < 0.2)
                         | (dataframe['btc_pct_close_max_72_5m'] < 1.01)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.92)
