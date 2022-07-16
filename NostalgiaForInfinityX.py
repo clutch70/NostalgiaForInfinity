@@ -115,7 +115,7 @@ class NostalgiaForInfinityXShort(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.0.1300"
+        return "v11.0.1307"
 
 
     # ROI table:
@@ -172,27 +172,29 @@ class NostalgiaForInfinityXShort(IStrategy):
     rebuy_mode = 0
     max_rebuy_orders_0 = 2
     max_rebuy_orders_1 = 1
-    max_rebuy_orders_2 = 10
+    max_rebuy_orders_2 = 2
+    max_rebuy_orders_2_alt = 1
     max_rebuy_orders_3 = 8
     max_rebuy_orders_4 = 3
     max_rebuy_orders_5 = 2
     max_rebuy_multiplier_lev = 0.5 # for leveraged tokens
     max_rebuy_multiplier_0 = 1.0
     max_rebuy_multiplier_1 = 1.0
-    max_rebuy_multiplier_2 = 0.2
+    max_rebuy_multiplier_2 = 0.8
     max_rebuy_multiplier_3 = 0.05
     max_rebuy_multiplier_4 = 0.1
     max_rebuy_multiplier_5 = 0.35
     rebuy_pcts_n_0 = (-0.04, -0.06, -0.09, -0.12)
     rebuy_pcts_n_1 = (-0.06, -0.09)
-    rebuy_pcts_n_2 = (-0.02, -0.025, -0.025, -0.03, -0.04, -0.045, -0.05, -0.055, -0.06, -0.08)
+    rebuy_pcts_n_2 = (-0.02, -0.03)
     rebuy_pcts_p_2 = (0.02, 0.025, 0.025, 0.03, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095)
     rebuy_pcts_n_3 = (-0.02, -0.04, -0.06, -0.08, -0.1, -0.12, -0.14, -0.16)
     rebuy_pcts_n_4 = (-0.02, -0.06, -0.1)
     rebuy_pcts_n_5 = (-0.05, -0.08)
     rebuy_multi_0 = 0.15
     rebuy_multi_1 = 0.35
-    rebuy_multi_2 = 1.0
+    rebuy_multi_2 = 0.15
+    rebuy_multi_2_alt = 0.35
     rebuy_multi_3 = 1.0
     rebuy_multi_4 = 1.0
     rebuy_multi_5 = 1.0
@@ -2579,6 +2581,8 @@ class NostalgiaForInfinityXShort(IStrategy):
             if ('use_alt_rebuys' in self.config and self.config['use_alt_rebuys']):
                 use_mode = 1
             enter_tags = entry_tag.split()
+            if all(c in self.rapid_mode_tags for c in enter_tags):
+                use_mode = 2
             if all(c in self.half_mode_tags for c in enter_tags):
                 use_mode = 5
             if (use_mode == 0):
@@ -2614,21 +2618,12 @@ class NostalgiaForInfinityXShort(IStrategy):
         if hasattr(trade, 'enter_tag') and trade.enter_tag is not None:
             enter_tag = trade.enter_tag
         enter_tags = enter_tag.split()
-        # No rebuys for rapid mode
-        if all(c in self.rapid_mode_tags for c in enter_tags):
-            return None
 
         dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
         if(len(dataframe) < 2):
             return None
         last_candle = dataframe.iloc[-1].squeeze()
         previous_candle = dataframe.iloc[-2].squeeze()
-        # simple TA checks, to assure that the price is not dropping rapidly
-        if (
-                # drop in the last candle
-               (last_candle['tpct_change_0'] > 0.018)
-        ):
-            return None
 
         count_of_entries = 0
         if (hasattr(trade, 'enter_side')):
@@ -2648,10 +2643,11 @@ class NostalgiaForInfinityXShort(IStrategy):
 
         # if to use alternate rebuy scheme
         use_alt = False
+        use_alt_2 = False
         if (use_mode == 0) and ((filled_entries[0].cost * (self.rebuy_multi_0 + (count_of_entries * 0.005))) < min_stake):
             use_alt = True
         if (use_mode == 2) and ((filled_entries[0].cost * (self.rebuy_multi_2 + (count_of_entries * 0.005))) < min_stake):
-            use_alt = True
+            use_alt_2 = True
         if (use_mode == 3) and ((filled_entries[0].cost * (self.rebuy_multi_3 + (count_of_entries * 0.005))) < min_stake):
             use_alt = True
         if (use_mode == 4) and ((filled_entries[0].cost * (self.rebuy_multi_4 + (count_of_entries * 0.005))) < min_stake):
@@ -2663,6 +2659,8 @@ class NostalgiaForInfinityXShort(IStrategy):
         if use_alt:
             use_mode = 1
 
+        if all(c in self.rapid_mode_tags for c in enter_tags):
+            use_mode = 2
         if all(c in self.half_mode_tags for c in enter_tags):
             use_mode = 5
 
@@ -2699,22 +2697,9 @@ class NostalgiaForInfinityXShort(IStrategy):
                 ):
                     is_rebuy = True
         elif (use_mode == 2):
-            if (1 <= count_of_entries <= 4):
+            if (1 <= count_of_entries <= self.max_rebuy_orders_2):
                 if (
                         (current_profit < self.rebuy_pcts_n_2[count_of_entries - 1])
-                        and (
-                            (last_candle['crsi'] > 5.0)
-                        )
-                ):
-                    is_rebuy = True
-            elif (5 <= count_of_entries <= self.max_rebuy_orders_2):
-                if (
-                        (current_profit < self.rebuy_pcts_n_2[count_of_entries - 1])
-                        and (
-                            (last_candle['crsi'] > 12.0)
-                            and (last_candle['crsi_1h'] > 10.0)
-                            and (last_candle['btc_not_downtrend_1h'] == True)
-                        )
                 ):
                     is_rebuy = True
         elif (use_mode == 3):
@@ -2779,7 +2764,7 @@ class NostalgiaForInfinityXShort(IStrategy):
             log.info(f"Rebuy: a buy tag found for pair {trade.pair}")
 
         # Calculate the new stake.
-        if 0 < count_of_entries <= (self.max_rebuy_orders_0 if use_mode == 0 else self.max_rebuy_orders_1 if use_mode == 1 else self.max_rebuy_orders_2 if use_mode == 2 else self.max_rebuy_orders_3 if use_mode == 3 else self.max_rebuy_orders_4):
+        if 0 < count_of_entries <= (self.max_rebuy_orders_0 if use_mode == 0 else self.max_rebuy_orders_1 if use_mode == 1 else self.max_rebuy_orders_2 if use_mode == 2 else self.max_rebuy_orders_3 if use_mode == 3 else self.max_rebuy_orders_4 if use_mode == 4 else self.max_rebuy_orders_5):
             try:
                 # This returns first order stake size
                 stake_amount = filled_entries[0].cost
@@ -2791,7 +2776,9 @@ class NostalgiaForInfinityXShort(IStrategy):
                     if (stake_amount < min_stake):
                         stake_amount = min_stake
                 elif (use_mode == 2):
-                    stake_amount = stake_amount * (self.rebuy_multi_2 + (count_of_entries * 0.005))
+                    if (use_alt_2) and (count_of_entries > max_rebuy_orders_2_alt):
+                        return None
+                    stake_amount = stake_amount * self.rebuy_multi_2
                 elif (use_mode == 3):
                     if (count_of_entries == 1):
                         stake_amount = stake_amount * self.rebuy_multi_3 * 1
@@ -11108,45 +11095,23 @@ class NostalgiaForInfinityXShort(IStrategy):
                     item_buy_logic.append(dataframe['r_14'] < -90.0)
                     item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
                     item_buy_logic.append(
-                        (dataframe['cmf'] > -0.5)
-                        | (dataframe['ewo'] > 4.0)
+                        (dataframe['btc_not_downtrend_1h'] == True)
+                        | (dataframe['cmf'] > 0.0)
+                        | (dataframe['mfi'] > 40.0)
+                        | (dataframe['ewo'] > 5.0)
+                        | (dataframe['rsi_14'] < 25.0)
                         | (dataframe['cti_1h'] < 0.8)
-                        | (dataframe['crsi_1h'] > 20.0)
-                        | (dataframe['tpct_change_144'] < 0.12)
-                        | (dataframe['hl_pct_change_48_1h'] < 0.5)
-                        | (dataframe['ema_20'] > dataframe['ema_50'])
-                        | (dataframe['close'] > dataframe['ema_26'])
-                        | (dataframe['close'] < dataframe['ema_20'] * 0.96)
-                    )
-                    item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
-                        | (dataframe['ewo'] > 3.4)
-                        | (dataframe['cmf'] > -0.1)
-                        | (dataframe['cti_1h'] < 0.5)
-                        | (dataframe['tpct_change_144'] < 0.12)
-                        | (dataframe['hl_pct_change_48_1h'] < 0.5)
-                        | (dataframe['ema_20'] > dataframe['ema_50'])
-                        | (dataframe['close'] > dataframe['ema_26'])
-                        | (dataframe['close'] < dataframe['ema_20'] * 0.94)
-                    )
-                    item_buy_logic.append(
-                        (dataframe['cmf'] > -0.2)
-                        | (dataframe['ewo'] > 7.2)
-                        | (dataframe['rsi_14'] < 30.0)
-                        | (dataframe['cti_1h'] < 0.5)
-                        | (dataframe['tpct_change_144'] < 0.12)
-                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.995))
-                        | (dataframe['close'] < dataframe['ema_20'] * 0.94)
+                        | (dataframe['rsi_14_1h'] < 50.0)
+                        | (dataframe['crsi_1h'] > 30.0)
+                        | (dataframe['tpct_change_144'] < 0.2)
+                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.12))
+                        | (dataframe['hl_pct_change_48_1h'] < 0.4)
+                        | (dataframe['btc_pct_close_max_72_5m'] < 1.03)
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
-                    )
-                    item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
-                        | (dataframe['ewo'] > 4.4)
-                        | (dataframe['cti_1h'] < 0.5)
-                        | (dataframe['tpct_change_144'] < 0.12)
-                        | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.995))
-                        | (dataframe['close'] < dataframe['ema_20'] * 0.94)
                         | (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.96)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.99)
+                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
                     )
                     item_buy_logic.append(
                         (dataframe['cmf'] > -0.1)
@@ -12306,6 +12271,23 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['close'] < dataframe['ema_20'] * 0.95)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.98)
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > -0.2)
+                        | (dataframe['mfi'] > 30.0)
+                        | (dataframe['rsi_14'] < 30.0)
+                        | (dataframe['cti'] < -0.95)
+                        | (dataframe['cti_1h'] < 0.8)
+                        | (dataframe['rsi_14_1h'] < 50.0)
+                        | (dataframe['crsi_1h'] > 30.0)
+                        | (dataframe['tpct_change_144'] < 0.16)
+                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.1))
+                        | (dataframe['hl_pct_change_48_1h'] < 0.5)
+                        | (dataframe['btc_pct_close_max_72_5m'] < 1.03)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.93)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.98)
+                        | (dataframe['rsi_14_15m'] < 30.0)
+                        | (dataframe['cti_15m'] < -0.9)
                     )
 
                 # Condition #15 - Semi swing. Uptrend. Local dip.
@@ -15183,14 +15165,14 @@ class NostalgiaForInfinityXShort(IStrategy):
                         (dataframe['cmf'] > -0.2)
                         | (dataframe['mfi'] > 30.0)
                         | (dataframe['rsi_14'] < 20.0)
-                        | (dataframe['cti'] < -0.9)
+                        | (dataframe['cti'] < -0.96)
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['rsi_14_1h'] < 50.0)
                         | (dataframe['crsi_1h'] > 30.0)
                         | (dataframe['tpct_change_144'] < 0.16)
                         | (dataframe['close_max_48'] < (dataframe['close'] * 1.1))
                         | (dataframe['hl_pct_change_48_1h'] < 0.25)
-                        | (dataframe['btc_pct_close_max_72_5m'] < 1.03)
+                        | (dataframe['btc_pct_close_max_72_5m'] < 1.01)
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         | (dataframe['close'] > (dataframe['sma_200'] * 0.99))
                         | (dataframe['close'] < dataframe['ema_20'] * 0.94)
