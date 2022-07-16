@@ -115,7 +115,7 @@ class NostalgiaForInfinityXShort(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.0.1307"
+        return "v11.0.1311"
 
 
     # ROI table:
@@ -170,8 +170,8 @@ class NostalgiaForInfinityXShort(IStrategy):
     # Rebuy feature
     position_adjustment_enable = True
     rebuy_mode = 0
-    max_rebuy_orders_0 = 2
-    max_rebuy_orders_1 = 1
+    max_rebuy_orders_0 = 4
+    max_rebuy_orders_1 = 2
     max_rebuy_orders_2 = 2
     max_rebuy_orders_2_alt = 1
     max_rebuy_orders_3 = 8
@@ -185,14 +185,14 @@ class NostalgiaForInfinityXShort(IStrategy):
     max_rebuy_multiplier_4 = 0.1
     max_rebuy_multiplier_5 = 0.35
     rebuy_pcts_n_0 = (-0.04, -0.06, -0.09, -0.12)
-    rebuy_pcts_n_1 = (-0.06, -0.09)
+    rebuy_pcts_n_1 = (-0.06, -0.12)
     rebuy_pcts_n_2 = (-0.02, -0.03)
     rebuy_pcts_p_2 = (0.02, 0.025, 0.025, 0.03, 0.07, 0.075, 0.08, 0.085, 0.09, 0.095)
     rebuy_pcts_n_3 = (-0.02, -0.04, -0.06, -0.08, -0.1, -0.12, -0.14, -0.16)
     rebuy_pcts_n_4 = (-0.02, -0.06, -0.1)
     rebuy_pcts_n_5 = (-0.05, -0.08)
     rebuy_multi_0 = 0.15
-    rebuy_multi_1 = 0.35
+    rebuy_multi_1 = 0.3
     rebuy_multi_2 = 0.15
     rebuy_multi_2_alt = 0.35
     rebuy_multi_3 = 1.0
@@ -12284,6 +12284,7 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['close_max_48'] < (dataframe['close'] * 1.1))
                         | (dataframe['hl_pct_change_48_1h'] < 0.5)
                         | (dataframe['btc_pct_close_max_72_5m'] < 1.03)
+                        | (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
                         | (dataframe['close'] < dataframe['ema_20'] * 0.93)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.98)
                         | (dataframe['rsi_14_15m'] < 30.0)
@@ -12671,6 +12672,25 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['hl_pct_change_48_1h'] < 0.4)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.94)
                         | (dataframe['close'] < (dataframe['res1_1d'] * 1.0))
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > -0.1)
+                        | (dataframe['mfi'] > 25.0)
+                        | (dataframe['rsi_14'] < 30.0)
+                        | (dataframe['cti'] < -0.95)
+                        | (dataframe['ewo'] > 8.0)
+                        | (dataframe['cti_1h'] < 0.8)
+                        | (dataframe['rsi_14_1h'] < 50.0)
+                        | (dataframe['crsi_1h'] > 30.0)
+                        | (dataframe['tpct_change_144'] < 0.16)
+                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.1))
+                        | (dataframe['hl_pct_change_48_1h'] < 0.5)
+                        | (dataframe['btc_pct_close_max_72_5m'] < 1.03)
+                        | (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.93)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
+                        | (dataframe['rsi_14_15m'] < 30.0)
+                        | (dataframe['cti_15m'] < -0.9)
                     )
 
                 # Condition #22 - Swing. Uptrend. Bounce from daily support level
@@ -13363,6 +13383,24 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['close'] < dataframe['ema_20'] * 0.95)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.98)
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > -0.2)
+                        | (dataframe['mfi'] > 30.0)
+                        | (dataframe['rsi_14'] < 30.0)
+                        | (dataframe['cti'] < -0.95)
+                        | (dataframe['cti_1h'] < 0.8)
+                        | (dataframe['rsi_14_1h'] < 50.0)
+                        | (dataframe['crsi_1h'] > 30.0)
+                        | (dataframe['tpct_change_144'] < 0.16)
+                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.1))
+                        | (dataframe['hl_pct_change_48_1h'] < 0.5)
+                        | (dataframe['btc_pct_close_max_72_5m'] < 1.03)
+                        | (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.93)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.98)
+                        | (dataframe['rsi_14_15m'] < 30.0)
+                        | (dataframe['cti_15m'] < -0.9)
                     )
 
                 # Condition #38 - Semi swing. Uptrend. Local dip.
