@@ -116,7 +116,7 @@ class NostalgiaForInfinityXSwing(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.1.155"
+        return "v11.1.159"
 
 
     # ROI table:
@@ -11758,30 +11758,19 @@ class NostalgiaForInfinityXSwing(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
                     )
                     item_buy_logic.append(
-                        (
-                            (dataframe['btc_not_downtrend_1h'] == True)
-                            & (dataframe['close_max_48'] < (dataframe['close'] * 1.16))
-                        )
+                        (dataframe['btc_not_downtrend_1h'] == True)
                         | (dataframe['cmf'] > 0.1)
                         | (dataframe['mfi'] > 40.0)
                         | (dataframe['rsi_14'] < 20.0)
-                        | (dataframe['ewo'] > 7.0)
+                        | (dataframe['ewo'] > 3.0)
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['rsi_14_1h'] < 50.0)
-                        |
-                        (
-                            (dataframe['crsi_1h'] > 40.0)
-                            & (dataframe['close_max_48'] < (dataframe['close'] * 1.16))
-                        )
+                        | (dataframe['crsi_1h'] > 40.0)
                         | (dataframe['tpct_change_144'] < 0.14)
                         | (dataframe['hl_pct_change_48_1h'] < 0.3)
                         | (dataframe['close_max_48'] < (dataframe['close'] * 1.12))
-                        |
-                        (
-                            (dataframe['btc_pct_close_max_72_5m'] < 1.03)
-                            & (dataframe['close_max_48'] < (dataframe['close'] * 1.16))
-                        )
-                        | (dataframe['close'] < dataframe['ema_20'] * 0.91)
+                        | (dataframe['btc_pct_close_max_72_5m'] < 1.03)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.94)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.98)
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.024))
                     )
@@ -11870,6 +11859,30 @@ class NostalgiaForInfinityXSwing(IStrategy):
                         | (dataframe['close'] < dataframe['ema_20'] * 0.92)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.97)
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02))
+                        | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.999))
+                        | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.01))
+                        | (dataframe['rsi_14_15m'] < 30.0)
+                        | (dataframe['cti_15m'] < -0.9)
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > 0.1)
+                        | (dataframe['mfi'] > 40.0)
+                        | (dataframe['rsi_14'] < 28.0)
+                        | (dataframe['cti'] < -0.8)
+                        | (dataframe['r_480'] > -50.0)
+                        | (dataframe['cti_1h'] < 0.5)
+                        | (dataframe['rsi_14_1h'] < 50.0)
+                        | (dataframe['r_14_1h'] < -75.0)
+                        | (dataframe['r_480_1h'] > -50.0)
+                        | (dataframe['tpct_change_144'] < 0.16)
+                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.16))
+                        | (dataframe['hl_pct_change_36'] < 0.2)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.3)
+                        | (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
+                        | (dataframe['close'] < dataframe['sma_30'] * 0.89)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.91)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
+                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.03))
                         | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.999))
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.01))
                         | (dataframe['rsi_14_15m'] < 30.0)
@@ -12258,7 +12271,11 @@ class NostalgiaForInfinityXSwing(IStrategy):
                     )
                     item_buy_logic.append(
                         (dataframe['ewo'] > 1.0)
-                        | (dataframe['cmf'] > 0.1)
+                        |
+                        (
+                            (dataframe['cmf'] > -0.1)
+                            & (dataframe['hl_pct_change_48_1h'] < 0.8)
+                        )
                         | (dataframe['mfi'] > 30.0)
                         | (dataframe['cti'] < -0.9)
                         | (dataframe['rsi_14'] < 20.0)
@@ -12326,7 +12343,7 @@ class NostalgiaForInfinityXSwing(IStrategy):
                     )
                     item_buy_logic.append(
                         (dataframe['cmf'] > 0.0)
-                        | (dataframe['mfi'] > 30.0)
+                        | (dataframe['mfi'] > 40.0)
                         | (dataframe['rsi_14'] < 16.0)
                         | (dataframe['cti'] < -0.95)
                         | (dataframe['cti_1h'] < 0.5)
@@ -18335,29 +18352,8 @@ class NostalgiaForInfinityXSwing(IStrategy):
     def confirm_trade_exit(self, pair: str, trade: Trade, order_type: str, amount: float,
                            rate: float, time_in_force: str, exit_reason: str,
                            current_time: datetime, **kwargs) -> bool:
-        """
-        Called right before placing a regular sell order.
-        Timing for this function is critical, so avoid doing heavy computations or
-        network requests in this method.
-
-        For full documentation please go to https://www.freqtrade.io/en/latest/strategy-advanced/
-
-        When not implemented by a strategy, returns True (always confirming).
-
-        :param pair: Pair that's about to be sold.
-        :param trade: trade object.
-        :param order_type: Order type (as configured in order_types). usually limit or market.
-        :param amount: Amount in quote currency.
-        :param rate: Rate that's going to be used when using limit orders
-        :param time_in_force: Time in force. Defaults to GTC (Good-til-cancelled).
-        :param sell_reason: Sell reason.
-            Can be any of ['roi', 'stop_loss', 'stoploss_on_exchange', 'trailing_stop_loss',
-                           'sell_signal', 'force_sell', 'emergency_sell']
-        :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
-        :return bool: When True is returned, then the sell-order is placed on the exchange.
-            False aborts the process
-        """
-        if self._should_hold_trade(trade, rate, exit_reason):
+        # Allow force exits
+        if self._should_hold_trade(trade, rate, exit_reason) and (exit_reason != 'force_exit'):
             return False
         if (exit_reason == 'stop_loss'):
             return False
