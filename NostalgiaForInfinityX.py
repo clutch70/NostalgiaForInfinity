@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.1.184"
+        return "v11.1.185"
 
 
     # ROI table:
@@ -11639,16 +11639,6 @@ class NostalgiaForInfinityX(IStrategy):
                     )
                     item_buy_logic.append(
                         (dataframe['btc_not_downtrend_1h'] == True)
-                        | (dataframe['cmf'] > 0.0)
-                        | (dataframe['rsi_14'] < 22.0)
-                        | (dataframe['tpct_change_144'] < 0.3)
-                        | (dataframe['ema_20'] > dataframe['ema_50'])
-                        | (dataframe['close'] > dataframe['ema_26'])
-                        | (dataframe['close'] > (dataframe['sup_level_1h'] * 0.905))
-                        | (dataframe['close'] < dataframe['sma_15'] * 0.93)
-                    )
-                    item_buy_logic.append(
-                        (dataframe['btc_not_downtrend_1h'] == True)
                         | (dataframe['mfi'] > 30.0)
                         | (dataframe['rsi_14'] < 22.0)
                         | (dataframe['cti_1h'] < -0.8)
@@ -18473,15 +18463,16 @@ class NostalgiaForInfinityX(IStrategy):
                            rate: float, time_in_force: str, exit_reason: str,
                            current_time: datetime, **kwargs) -> bool:
         # Allow force exits
-        if self._should_hold_trade(trade, rate, exit_reason) and (exit_reason != 'force_exit'):
-            return False
-        if (exit_reason == 'stop_loss'):
-            return False
-        if (('exit_profit_only' in self.config and self.config['exit_profit_only'])
-            or ('sell_profit_only' in self.config and self.config['sell_profit_only'])):
-            current_profit = ((rate - trade.open_rate) / trade.open_rate)
-            if (current_profit < self.exit_profit_offset):
+        if exit_reason != 'force_exit':
+            if self._should_hold_trade(trade, rate, exit_reason):
                 return False
+            if (exit_reason == 'stop_loss'):
+                return False
+            if (('exit_profit_only' in self.config and self.config['exit_profit_only'])
+                or ('sell_profit_only' in self.config and self.config['sell_profit_only'])):
+                current_profit = ((rate - trade.open_rate) / trade.open_rate)
+                if (current_profit < self.exit_profit_offset):
+                    return False
 
         self._remove_profit_target(pair)
 
