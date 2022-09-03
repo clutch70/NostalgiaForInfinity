@@ -116,7 +116,7 @@ class NostalgiaForInfinityXSwing(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.20"
+        return "v11.2.22"
 
 
     # ROI table:
