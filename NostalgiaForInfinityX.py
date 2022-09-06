@@ -117,7 +117,7 @@ class NostalgiaForInfinityXSwing(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.26"
+        return "v11.2.28"
 
 
     # ROI table:
@@ -2672,7 +2672,7 @@ class NostalgiaForInfinityXSwing(IStrategy):
             if (1 <= count_of_entries <= 1):
                 if (
                         (current_profit < self.rebuy_pcts_n_0[count_of_entries - 1])
-                        and (last_candle['ha_close'] > last_candle['ha_open'])
+                        and (last_candle['close_max_48'] < (last_candle['close'] * 1.05))
                         and (last_candle['btc_pct_close_max_72_5m'] < 1.02)
                 ):
                     is_rebuy = True
@@ -12295,9 +12295,15 @@ class NostalgiaForInfinityXSwing(IStrategy):
                     )
                     item_buy_logic.append(
                         (dataframe['cti'] < -0.9)
+                        | (dataframe['r_480'] > -16.0)
                         | (dataframe['cti_1h'] < -0.95)
+                        | (dataframe['rsi_14_1h'] < 18.0)
+                        | (dataframe['tpct_change_144'] < 0.06)
+                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.06))
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.046))
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.955))
+                        | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.91))
+                        | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.06))
                     )
                     item_buy_logic.append(
                         (dataframe['cmf'] > 0.0)
