@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.33"
+        return "v11.2.35"
 
 
     # ROI table:
@@ -2938,18 +2938,12 @@ class NostalgiaForInfinityX(IStrategy):
 
         if not is_btc_stake:
             if (
-                    (current_profit < -0.06)
-                    and (last_candle['close'] < last_candle['ema_200'])
-                    and (((last_candle['ema_200'] - last_candle['close']) / last_candle['close']) < 0.004)
-                    and (last_candle['rsi_14'] > previous_candle_1['rsi_14'])
-                    and (last_candle['rsi_14'] > last_candle['rsi_14_1h'] + 20.0)
-                    and (last_candle['sma_200_dec_24'])
-                    and (last_candle['sma_200_dec_20_15m'])
-                    and (current_time - timedelta(hours=12) > trade.open_date_utc)
-                    # temporary
-                    and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 8, 28) or is_backtest)
-            ):
-                return True, 'sell_stoploss_u_e_1'
+                     (current_profit < [-0.25, -0.25, -0.35][stop_index])
+                     and (current_time - timedelta(hours=1) > trade.open_date_utc)
+                     # temporary
+                     and (trade.open_date_utc.replace(tzinfo=None) >= datetime(2022, 8, 28) or is_backtest)
+             ):
+                 return True, 'sell_stoploss_stop_2'
         else:
             # BTC/ETH stake
             if (
@@ -14330,10 +14324,10 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(
                         (dataframe['rsi_14'] < 30.0)
                         | (dataframe['cti_1h'] < 0.0)
-                        | (dataframe['tpct_change_144'] < 0.12)
+                        | (dataframe['tpct_change_144'] < 0.1)
                         | (dataframe['hl_pct_change_48_1h'] < 0.3)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.94)
-                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.99)
                     )
                     item_buy_logic.append(
                         (dataframe['cmf'] > -0.3)
