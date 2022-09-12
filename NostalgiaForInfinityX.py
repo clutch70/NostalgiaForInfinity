@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.75"
+        return "v11.2.78"
 
 
     # ROI table:
@@ -15508,14 +15508,14 @@ class NostalgiaForInfinityX(IStrategy):
                     item_buy_logic.append(
                         (dataframe['cmf'] > -0.3)
                         | (dataframe['mfi'] > 20.0)
-                        | (dataframe['rsi_14'] < 20.0)
+                        | (dataframe['rsi_14'] < 8.0)
                         | (dataframe['cti_1h'] < 0.5)
                         | (dataframe['tpct_change_144'] < 0.2)
-                        | (dataframe['hl_pct_change_48_1h'] < 0.5)
-                        | (dataframe['close'] < dataframe['ema_20'] * 0.95)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.25)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.9)
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.028))
-                        | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.99))
+                        | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.92))
                     )
 
                 # Condition #47 - 15m. Semi swing. Local dip. 1h minor dip.
@@ -15702,6 +15702,22 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.04))
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.038))
+                    )
+                    item_buy_logic.append(
+                        (dataframe['cmf'] > 0.1)
+                        | (dataframe['cti_1h'] < -0.5)
+                        | (dataframe['rsi_14_1h'] < 20.0)
+                        | (dataframe['tpct_change_144'] < 0.2)
+                        | (dataframe['close_max_48'] < (dataframe['close'] * 1.2))
+                        | (dataframe['hl_pct_change_36'] < 0.2)
+                        | (dataframe['hl_pct_change_48_1h'] < 0.25)
+                        | ((dataframe['btc_pct_close_max_72_5m'] < 1.01) & (dataframe['btc_not_downtrend_1h'] == True))
+                        | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
+                        | (dataframe['close'] > (dataframe['sma_200'] * 0.9))
+                        | (dataframe['close'] < dataframe['sma_30'] * 0.86)
+                        | (dataframe['close'] < dataframe['ema_20'] * 0.91)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.999)
+                        | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.98))
                     )
 
                 # Condition #50 - 15m. Semi swing. Deep local dip. Mild 15m uptrend.
