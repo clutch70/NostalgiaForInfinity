@@ -117,7 +117,7 @@ class NostalgiaForInfinityXShort(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.155"
+        return "v11.2.158"
 
 
     # ROI table:
@@ -9624,7 +9624,7 @@ class NostalgiaForInfinityXShort(IStrategy):
             sell_max, signal_name_max = self.sell_profit_target(pair, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1, previous_rate, previous_profit, previous_sell_reason, previous_time_profit_reached, enter_tags)
             if sell_max and signal_name_max is not None:
                 return f"{signal_name_max}_m ( {enter_tag})"
-            if (current_profit > (previous_profit + 0.005)):
+            if (current_profit > (previous_profit + 0.025)):
                 # Update the target, raise it.
                 mark_pair, mark_signal = self.mark_profit_target(pair, True, previous_sell_reason, trade, current_time, current_rate, current_profit, last_candle, previous_candle_1)
                 if mark_pair:
@@ -9649,7 +9649,6 @@ class NostalgiaForInfinityXShort(IStrategy):
         else:
             if (
                     (current_profit >= 0.02)
-                    or ((current_profit >= 0.012) and (all(c in self.rapid_mode_tags for c in enter_tags)))
             ):
                 previous_profit = None
                 if self.target_profit_cache is not None and pair in self.target_profit_cache.data:
@@ -11104,24 +11103,36 @@ class NostalgiaForInfinityXShort(IStrategy):
                     item_buy_logic.append(
                         (dataframe['cmf'] > -0.1)
                         | (dataframe['mfi'] > 20.0)
-                        | (dataframe['rsi_14'] < 18.0)
-                        | (dataframe['cti'] < -0.9)
+                        | (dataframe['rsi_14'] < 12.0)
+                        |
+                        (
+                            (dataframe['cti'] < -0.9)
+                            & (dataframe['close_max_48'] < (dataframe['close'] * 1.24))
+                        )
                         | (dataframe['r_480'] > -30.0)
                         | (dataframe['crsi'] > 20.0)
-                        | (dataframe['cti_1h'] < 0.0)
+                        | (dataframe['cti_1h'] < -0.0)
                         | (dataframe['rsi_14_1h'] < 30.0)
-                        | (dataframe['r_14_1h'] < -90.0)
+                        | (dataframe['r_14_1h'] < -95.0)
                         | (dataframe['tpct_change_0'] < 0.016)
                         | (dataframe['tpct_change_144'] < 0.08)
                         | (dataframe['close_max_48'] < (dataframe['close'] * 1.08))
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         | (dataframe['ema_100'] > (dataframe['ema_200'] * 1.05))
-                        | (dataframe['close'] < dataframe['sma_30'] * 0.9)
-                        | (dataframe['close'] < dataframe['ema_20'] * 0.92)
+                        |
+                        (
+                            (dataframe['close'] < dataframe['sma_30'] * 0.9)
+                            & (dataframe['close_max_48'] < (dataframe['close'] * 1.24))
+                        )
+                        |
+                        (
+                            (dataframe['close'] < dataframe['ema_20'] * 0.92)
+                            & (dataframe['close_max_48'] < (dataframe['close'] * 1.24))
+                        )
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.97)
-                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.024))
-                        | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.97))
-                        | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.014))
+                        | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.05))
+                        | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.93))
+                        | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.03))
                         | (dataframe['rsi_14_15m'] < 20.0)
                         | (dataframe['cti_15m'] < -0.9)
                         |
