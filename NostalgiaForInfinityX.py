@@ -117,7 +117,7 @@ class NostalgiaForInfinityXShort(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.354"
+        return "v11.2.356"
 
 
     # ROI table:
@@ -11197,6 +11197,7 @@ class NostalgiaForInfinityXShort(IStrategy):
                             (dataframe['cti'] < -0.9)
                             & (dataframe['close_max_48'] < (dataframe['close'] * 1.24))
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.02)
+                            & (dataframe['tpct_change_144'] < 0.16)
                         )
                         | (dataframe['r_480'] > -30.0)
                         | (dataframe['crsi'] > 20.0)
@@ -11230,7 +11231,7 @@ class NostalgiaForInfinityXShort(IStrategy):
                             & (dataframe['closedelta'].gt(dataframe['close'] * 0.026))
                             & (dataframe['tail'].lt(dataframe['bb40_2_delta'] * 0.2))
                         )
-                        | (dataframe['close_delta'] > dataframe['close'] * 31.0 / 1000)
+                        | (dataframe['close_delta'] > dataframe['close'] * 32.0 / 1000)
                         | (dataframe['volume_mean_12'] > (dataframe['volume_mean_24'] * 2.0))
                     )
 
@@ -14516,8 +14517,15 @@ class NostalgiaForInfinityXShort(IStrategy):
                         | (dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
                     )
                     item_buy_logic.append(
-                        (dataframe['cmf'] > -0.1)
-                        | (dataframe['mfi'] > 30.0)
+                        (
+                            (dataframe['cmf'] > -0.1)
+                            & (dataframe['btc_pct_close_max_72_5m'] < 1.05)
+                        )
+                        |
+                        (
+                            (dataframe['mfi'] > 30.0)
+                            & (dataframe['btc_pct_close_max_72_5m'] < 1.05)
+                        )
                         | (dataframe['rsi_14'] < 36.0)
                         | (dataframe['cti_1h'] < -0.9)
                         | (dataframe['crsi_1h'] > 30.0)
