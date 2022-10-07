@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.445"
+        return "v11.2.447"
 
 
     # ROI table:
@@ -9677,7 +9677,6 @@ class NostalgiaForInfinityX(IStrategy):
                 or (
                     (signal_name not in ["sell_profit_maximizer_01", "sell_stoploss_u_e_1", "sell_stoploss_doom_1", "sell_stoploss_stop_1", "sell_stoploss_stop_2", "sell_stoploss_rpd_stop_1", "sell_stoploss_hlf_stop_1"])
                     and (not all(c in self.half_mode_tags for c in enter_tags))
-                    and (not all(c in ['force_entry'] for c in enter_tags))
                 )
         ):
             if sell and (signal_name is not None):
@@ -18654,7 +18653,7 @@ class NostalgiaForInfinityX(IStrategy):
                             (dataframe['close'] < (dataframe['bb20_2_low'] * 0.999))
                             & ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.036))
                             & (dataframe['cmf'] > -0.25)
-                            & (dataframe['tpct_change_144'] < 0.3)
+                            & (dataframe['tpct_change_144'] < 0.34)
                         )
                     )
                     item_buy_logic.append(
