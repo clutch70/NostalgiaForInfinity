@@ -117,7 +117,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.487"
+        return "v11.2.491"
 
 
     # ROI table:
@@ -9929,6 +9929,8 @@ class NostalgiaForInfinityX(IStrategy):
         dataframe['ema_100'] = ta.EMA(dataframe, timeperiod=100)
         dataframe['ema_200'] = ta.EMA(dataframe, timeperiod=200)
 
+        dataframe['ema_200_pct_change_144'] = ((dataframe['ema_200'] - dataframe['ema_200'].shift(144)) / dataframe['ema_200'].shift(144))
+
         # SMA
         dataframe['sma_15'] = ta.SMA(dataframe, timeperiod=15)
         dataframe['sma_28'] = ta.SMA(dataframe, timeperiod=28)
@@ -11956,6 +11958,7 @@ class NostalgiaForInfinityX(IStrategy):
                 elif index == 8:
                     # Non-Standard protections
                     item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
+                    item_buy_logic.append(dataframe['ema_200_pct_change_144'] < 0.2)
 
                     # Logic
                     item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * 0.938)
@@ -16537,6 +16540,7 @@ class NostalgiaForInfinityX(IStrategy):
                     # Non-Standard protections
                     item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.95))
                     item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
+                    item_buy_logic.append(dataframe['ema_200_pct_change_144'] < 0.12)
 
                     # Logic
                     item_buy_logic.append(dataframe['close_15m'] < dataframe['ema_20_15m'] * 0.948)
@@ -16715,6 +16719,7 @@ class NostalgiaForInfinityX(IStrategy):
                     # Non-Standard protections (add below)
                     item_buy_logic.append(dataframe['close'] > (dataframe['sup_level_1h'] * 0.89))
                     item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.5)
+                    item_buy_logic.append(dataframe['ema_200_pct_change_144'] < 0.12)
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26_15m'] > dataframe['ema_12_15m'])
@@ -18928,7 +18933,7 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.014))
                         | (dataframe['close'] < dataframe['sma_30'] * 0.86)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.89)
-                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.99)
+                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.98)
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.048))
                         | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.99))
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.02))
