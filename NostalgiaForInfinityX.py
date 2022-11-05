@@ -117,7 +117,7 @@ class NostalgiaForInfinityXShort(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.666"
+        return "v11.2.668"
 
 
     # ROI table:
