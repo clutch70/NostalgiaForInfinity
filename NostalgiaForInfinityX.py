@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.805"
+        return "v11.2.808"
 
 
     # ROI table:
@@ -17901,7 +17901,11 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['btc_not_downtrend_1h'] == True)
                         )
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
-                        | (dataframe['sma_200'] > dataframe['sma_200'].shift(48))
+                        |
+                        (
+                            (dataframe['sma_200'] > dataframe['sma_200'].shift(48))
+                            & (dataframe['close_max_48'] < (dataframe['close'] * 1.12))
+                        )
                         | (dataframe['close'] > (dataframe['sma_200'] * 0.95))
                         | (dataframe['close'] < dataframe['sma_30'] * 0.94)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.95)
@@ -18330,7 +18334,11 @@ class NostalgiaForInfinityX(IStrategy):
                             (dataframe['tpct_change_144'] < 0.12)
                             & (dataframe['cmf_1h'] > -0.25)
                         )
-                        | (dataframe['hl_pct_change_48_1h'] < 0.5)
+                        |
+                        (
+                            (dataframe['hl_pct_change_48_1h'] < 0.5)
+                            & (dataframe['hl_pct_change_36'] < 0.12)
+                        )
                         |
                         (
                             (dataframe['sma_200'] > dataframe['sma_200'].shift(48))
@@ -19387,12 +19395,17 @@ class NostalgiaForInfinityX(IStrategy):
                         )
                         | (dataframe['tpct_change_144'] < 0.1)
                         | (dataframe['close_max_48'] < (dataframe['close'] * 1.08))
-                        | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
+                        |
+                        (
+                            (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
+                            & (dataframe['ema_200_pct_change_288'] < 0.12)
+                        )
                         |
                         (
                             (dataframe['close'] > (dataframe['sma_200'] * 0.99))
                             & (dataframe['btc_pct_close_max_72_5m'] < 1.05)
                             & (dataframe['cmf'] > -0.5)
+                            & (dataframe['ema_200_pct_change_288'] < 0.12)
                         )
                         | (dataframe['close'] < dataframe['ema_20'] * 0.92)
                         |
