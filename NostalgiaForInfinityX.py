@@ -116,7 +116,7 @@ class NostalgiaForInfinityXSwing(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.799"
+        return "v11.2.802"
 
 
     # ROI table:
@@ -12675,6 +12675,7 @@ class NostalgiaForInfinityXSwing(IStrategy):
                             & (dataframe['cti_1h'] < 0.8)
                             & (dataframe['cmf'] > -0.3)
                             & (dataframe['hl_pct_change_36'] < 0.3)
+                            & (dataframe['crsi_1h'] > 10.0)
                         )
                         | (dataframe['ema_200'] > (dataframe['ema_200'].shift(12) * 1.01))
                         | (dataframe['close'] < dataframe['sma_30'] * 0.88)
@@ -12686,6 +12687,7 @@ class NostalgiaForInfinityXSwing(IStrategy):
                             (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.98))
                             & (dataframe['hl_pct_change_36'] < 0.3)
                             & (dataframe['hl_pct_change_48_1h'] < 0.5)
+                            & (dataframe['crsi_1h'] > 10.0)
                         )
                         |
                         (
@@ -15143,6 +15145,7 @@ class NostalgiaForInfinityXSwing(IStrategy):
                         (
                             (dataframe['ewo'] > 4.4)
                             & (dataframe['close'] < (dataframe['res3_1d'] * 1.0))
+                            & (dataframe['ema_200_pct_change_144'] < 0.12)
                         )
                         |
                         (
@@ -21076,6 +21079,7 @@ class NostalgiaForInfinityXSwing(IStrategy):
                             (dataframe['cmf'] > -0.3)
                             & (dataframe['crsi_1h'] > 8.0)
                             & (dataframe['ema_200_pct_change_144'] > -0.1)
+                            & (dataframe['hl_pct_change_36'] < 0.12)
                         )
                         |
                         (
@@ -21105,6 +21109,7 @@ class NostalgiaForInfinityXSwing(IStrategy):
                         (
                             (dataframe['close'] > (dataframe['sma_200'] * 0.99))
                             & (dataframe['cmf'] > -0.5)
+                            & (dataframe['hl_pct_change_36'] < 0.12)
                         )
                         | (dataframe['close'] < dataframe['ema_20'] * 0.94)
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.97)
