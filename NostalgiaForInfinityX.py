@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.2.851"
+        return "v11.2.855"
 
 
     # ROI table:
@@ -11199,7 +11199,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['mfi'] > 36.0)
-                            & (dataframe['btc_pct_close_max_72_5m'] < 1.04)
+                            & (dataframe['btc_pct_close_max_72_5m'] < 1.03)
                         )
                         |
                         (
@@ -11235,7 +11235,7 @@ class NostalgiaForInfinityX(IStrategy):
                         |
                         (
                             (dataframe['tpct_change_144'] < 0.08)
-                            & (dataframe['btc_pct_close_max_72_5m'] < 1.06)
+                            & (dataframe['btc_pct_close_max_72_5m'] < 1.03)
                         )
                         |
                         (
@@ -12715,7 +12715,11 @@ class NostalgiaForInfinityX(IStrategy):
                             (dataframe['ewo'] > 6.0)
                             & (dataframe['hl_pct_change_6_1h'] < 0.25)
                         )
-                        | (dataframe['cti_1h'] < 0.0)
+                        |
+                        (
+                            (dataframe['cti_1h'] < 0.0)
+                            & (dataframe['ema_200_pct_change_288'] < 0.12)
+                        )
                         | (dataframe['rsi_14_1h'] < 40.0)
                         |
                         (
@@ -15606,9 +15610,21 @@ class NostalgiaForInfinityX(IStrategy):
                             & (dataframe['ema_200_pct_change_288'] < 0.12)
                         )
                         | (dataframe['ewo'] > 4.4)
-                        | (dataframe['cti_1h'] < 0.75)
-                        | (dataframe['rsi_14_1h'] < 50.0)
-                        | (dataframe['r_14_1h'] < -75.0)
+                        |
+                        (
+                            (dataframe['cti_1h'] < 0.75)
+                            & (dataframe['btc_pct_close_max_72_5m'] < 1.04)
+                        )
+                        |
+                        (
+                            (dataframe['rsi_14_1h'] < 50.0)
+                            & (dataframe['btc_pct_close_max_72_5m'] < 1.04)
+                        )
+                        |
+                        (
+                            (dataframe['r_14_1h'] < -75.0)
+                            & (dataframe['btc_pct_close_max_72_5m'] < 1.04)
+                        )
                         |
                         (
                             (dataframe['crsi_1h'] > 20.0)
@@ -15631,7 +15647,11 @@ class NostalgiaForInfinityX(IStrategy):
                         )
                         | (dataframe['close'] < dataframe['sma_30'] * 0.9)
                         | (dataframe['close'] < dataframe['ema_20'] * 0.92)
-                        | (dataframe['close'] < dataframe['bb20_2_low'] * 0.99)
+                        |
+                        (
+                            (dataframe['close'] < dataframe['bb20_2_low'] * 0.99)
+                            & (dataframe['btc_pct_close_max_72_5m'] < 1.04)
+                        )
                         | ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.028))
                         | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.98))
                         | ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.01))
@@ -19914,7 +19934,10 @@ class NostalgiaForInfinityX(IStrategy):
                         | (dataframe['close'] < dataframe['bb20_2_low'] * 0.98)
                     )
                     item_buy_logic.append(
-                        (dataframe['cmf'] > -0.1)
+                        (
+                            (dataframe['cmf'] > -0.1)
+                            & (dataframe['hl_pct_change_48_1h'] < 0.6)
+                        )
                         | (dataframe['mfi'] > 20.0)
                         | (dataframe['rsi_14'] < 12.0)
                         | (dataframe['cti'] < -0.9)
