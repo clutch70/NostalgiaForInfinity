@@ -116,7 +116,7 @@ class NostalgiaForInfinityX(IStrategy):
     INTERFACE_VERSION = 3
 
     def version(self) -> str:
-        return "v11.3.49"
+        return "v11.3.51"
 
 
     # ROI table:
@@ -14318,14 +14318,22 @@ class NostalgiaForInfinityX(IStrategy):
                             ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.01))
                             & (dataframe['hl_pct_change_36'] < 0.2)
                         )
-                        | (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.999))
+                        |
+                        (
+                            (dataframe['close_15m'] < (dataframe['bb20_2_low_15m'] * 0.999))
+                            & (dataframe['ema_200_pct_change_144'] < 0.12)
+                        )
                         |
                         (
                             ((dataframe['ema_26_15m'] - dataframe['ema_12_15m']) > (dataframe['open_15m'] * 0.01))
-                            & (dataframe['ema_200_pct_change_144'] < 0.2)
+                            & (dataframe['ema_200_pct_change_144'] < 0.12)
                         )
                         | (dataframe['rsi_14_15m'] < 30.0)
-                        | (dataframe['cti_15m'] < -0.9)
+                        |
+                        (
+                            (dataframe['cti_15m'] < -0.9)
+                            & (dataframe['ema_200_pct_change_144'] < 0.12)
+                        )
                     )
 
                 # Condition #15 - Semi swing. Uptrend. Local dip.
@@ -17792,6 +17800,7 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['btc_not_downtrend_1h'] == True)
                             & (dataframe['ema_200_pct_change_288'] < 0.12)
+                            & (dataframe['cti_1h'] < 0.9)
                         )
                         |
                         (
@@ -17808,13 +17817,18 @@ class NostalgiaForInfinityX(IStrategy):
                         (
                             (dataframe['crsi_1h'] > 30.0)
                             & (dataframe['ema_200_pct_change_288'] < 0.12)
+                            & (dataframe['cti_1h'] < 0.9)
                         )
                         |
                         (
                             (dataframe['tpct_change_144'] < 0.08)
                             & (dataframe['ema_200_pct_change_288'] < 0.12)
                         )
-                        | (dataframe['hl_pct_change_48_1h'] < 0.25)
+                        |
+                        (
+                            (dataframe['hl_pct_change_48_1h'] < 0.25)
+                            & (dataframe['cti_1h'] < 0.9)
+                        )
                         | (dataframe['ema_20'] > dataframe['ema_50'])
                         | (dataframe['close'] > dataframe['ema_26'])
                         | (dataframe['close'] < dataframe['sma_30'] * 0.9)
