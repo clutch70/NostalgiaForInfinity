@@ -4,6 +4,7 @@ import rapidjson
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy as np
 import talib.abstract as ta
+import pandas as pd
 import pandas_ta as pta
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair
@@ -13,9 +14,11 @@ from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
 import time
 from typing import Optional
+import warnings
 
 log = logging.getLogger(__name__)
 #log.setLevel(logging.DEBUG)
+warnings.simplefilter(action='ignore', category=pd.errors.PerformanceWarning)
 
 #############################################################################################################
 ##                NostalgiaForInfinityX2 by iterativ                                                       ##
@@ -959,6 +962,9 @@ class NostalgiaForInfinityX2(IStrategy):
         informative_4h['r_14'] = williams_r(informative_4h, period=14)
         informative_4h['r_480'] = williams_r(informative_4h, period=480)
 
+        # CTI
+        informative_4h['cti_20'] = pta.cti(informative_4h["close"], length=20)
+
         # S/R
         res_series = informative_4h['high'].rolling(window = 5, center=True).apply(lambda row: is_resistance(row), raw=True).shift(2)
         sup_series = informative_4h['low'].rolling(window = 5, center=True).apply(lambda row: is_support(row), raw=True).shift(2)
@@ -1376,6 +1382,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['sma_26_4h'])
 
                     item_buy_logic.append(dataframe['cti_20_1h'] < 0.85)
+                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.9)
 
                     item_buy_logic.append(dataframe['not_downtrend_1h'])
                     item_buy_logic.append(dataframe['not_downtrend_4h'])
@@ -1473,6 +1480,7 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['sma_26_4h'])
 
                     item_buy_logic.append(dataframe['cti_20_1h'] < 0.85)
+                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.9)
 
                     item_buy_logic.append(dataframe['not_downtrend_1h'])
                     item_buy_logic.append(dataframe['not_downtrend_4h'])
