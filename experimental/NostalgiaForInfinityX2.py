@@ -978,6 +978,9 @@ class NostalgiaForInfinityX2(IStrategy):
         # Downtrend checks
         informative_4h['not_downtrend'] = ((informative_4h['close'] > informative_4h['close'].shift(2)) | (informative_4h['rsi_14'] > 50.0))
 
+        # Wicks
+        informative_4h['top_wick_pct'] = ((informative_4h['high'] - np.maximum(informative_4h['open'], informative_4h['close'])) / np.maximum(informative_4h['open'], informative_4h['close']))
+
         # Max highs
         informative_4h['high_max_3'] = informative_4h['high'].rolling(3).max()
         informative_4h['high_max_12'] = informative_4h['high'].rolling(12).max()
@@ -1050,6 +1053,14 @@ class NostalgiaForInfinityX2(IStrategy):
 
         # Downtrend checks
         informative_1h['not_downtrend'] = ((informative_1h['close'] > informative_1h['close'].shift(2)) | (informative_1h['rsi_14'] > 50.0))
+
+        informative_1h['is_downtrend_5'] = ((informative_1h['close'] < informative_1h['open']) & (informative_1h['close'].shift(1) < informative_1h['open'].shift(1)) & (informative_1h['close'].shift(2) < informative_1h['open'].shift(2)) & (informative_1h['close'].shift(3) < informative_1h['open'].shift(3)) & (informative_1h['close'].shift(4) < informative_1h['open'].shift(4)))
+
+        # Wicks
+        informative_1h['top_wick_pct'] = ((informative_1h['high'] - np.maximum(informative_1h['open'], informative_1h['close'])) / np.maximum(informative_1h['open'], informative_1h['close']))
+
+        # Candle change
+        informative_1h['change_pct'] = (informative_1h['close'] - informative_1h['open']) / informative_1h['open']
 
         # Max highs
         informative_1h['high_max_6'] = informative_1h['high'].rolling(6).max()
@@ -1511,29 +1522,31 @@ class NostalgiaForInfinityX2(IStrategy):
                     item_buy_logic.append(dataframe['btc_is_bull_4h'] == False)
                     item_buy_logic.append(dataframe['btc_pct_close_max_24_5m'] < 0.03)
                     item_buy_logic.append(dataframe['btc_pct_close_max_72_5m'] < 0.03)
-                    item_buy_logic.append((dataframe['tpct_change_2'] < 0.06))
                     item_buy_logic.append(dataframe['close_max_48'] < (dataframe['close'] * 1.3))
-                    item_buy_logic.append(dataframe['hl_pct_change_36'] < 0.3)
                     item_buy_logic.append(dataframe['hl_pct_change_24_1h'] < 3.0)
 
-                    item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['ema_26_1h'])
-                    item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['ema_200_1h'])
-                    item_buy_logic.append(dataframe['sma_12_1h'] > dataframe['sma_26_1h'])
-                    item_buy_logic.append(dataframe['sma_12_1h'] > dataframe['sma_200_1h'])
-                    item_buy_logic.append(dataframe['ema_12_1h'] > dataframe['sma_26_1h'])
+                    item_buy_logic.append(dataframe['sma_200'] > dataframe['sma_200'].shift(36))
+                    item_buy_logic.append(dataframe['sma_200_1h'] > dataframe['sma_200_1h'].shift(48))
+                    item_buy_logic.append(dataframe['sma_200_4h'] > dataframe['sma_200_4h'].shift(96))
 
-                    item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['ema_26_4h'])
-                    item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['ema_200_4h'])
-                    item_buy_logic.append(dataframe['sma_12_4h'] > dataframe['sma_26_4h'])
-                    item_buy_logic.append(dataframe['sma_12_4h'] > dataframe['sma_200_4h'])
-                    item_buy_logic.append(dataframe['ema_12_4h'] > dataframe['sma_26_4h'])
-
-                    item_buy_logic.append(dataframe['cti_20_1h'] < 0.85)
-                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.9)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] < 65.0)
+                    item_buy_logic.append(dataframe['cti_20_1h'] < 0.88)
+                    item_buy_logic.append(dataframe['cti_20_4h'] < 0.88)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < 80.0)
+                    item_buy_logic.append(dataframe['rsi_14_4h'] < 80.0)
+                    item_buy_logic.append(dataframe['r_14_4h'] < -5.0)
 
                     item_buy_logic.append(dataframe['not_downtrend_1h'])
                     item_buy_logic.append(dataframe['not_downtrend_4h'])
+                    item_buy_logic.append(dataframe['pct_change_high_max_6_24_1h'] > -0.3)
+                    item_buy_logic.append(dataframe['pct_change_high_max_3_12_4h'] > -0.4)
+                    item_buy_logic.append(dataframe['top_wick_pct_4h'] < 0.24)
+                    item_buy_logic.append((dataframe['top_wick_pct_4h'] < 0.1)
+                                          | (dataframe['top_wick_pct_4h'].shift(48) < 0.2)
+                                          | (dataframe['top_wick_pct_4h'].shift(96) < 0.2))
+                    item_buy_logic.append(dataframe['is_downtrend_5_1h'] == False)
+                    item_buy_logic.append((dataframe['change_pct_1h'] > -0.1)
+                                          | (dataframe['top_wick_pct_1h'].shift(1) < 0.05)
+                                          | (dataframe['cti_20_1h'] < 0.8))
 
                     # Logic
                     item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
